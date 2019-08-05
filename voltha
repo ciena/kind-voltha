@@ -223,14 +223,12 @@ if [ "$WITH_TP" == "yes" ]; then
     AAA_VER=1.9.0
     DHCP_VER=1.6.0
     SADIS_CONFIG=sadis-config.json
-    ONOS_VER=1.13.9
 else
     SADIS_VER=2.2.0
     OLT_VER=2.1.0
     AAA_VER=1.8.0
     DHCP_VER=1.5.0
     SADIS_CONFIG=sadis-config-notp.json
-    ONOS_VER=1.13.5
 fi
 export ONOS_API_PORT ONOS_SSH_PORT SADIS_VER OLT_VER AAA_VER DHCP_VER
 
