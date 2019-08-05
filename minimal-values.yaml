@@ -19,7 +19,7 @@ images:
   adapter_open_olt:
     tag_go: master
   onos:
-    tag: 1.13.5
+    tag: 1.13.9
   bbsim:
     tag: master
 

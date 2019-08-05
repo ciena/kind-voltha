@@ -222,11 +222,15 @@ if [ "$WITH_TP" == "yes" ]; then
     OLT_VER=3.0.1
     AAA_VER=1.9.0
     DHCP_VER=1.6.0
+    SADIS_CONFIG=sadis-config.json
+    ONOS_VER=1.13.9
 else
     SADIS_VER=2.2.0
     OLT_VER=2.1.0
     AAA_VER=1.8.0
     DHCP_VER=1.5.0
+    SADIS_CONFIG=sadis-config-notp.json
+    ONOS_VER=1.13.5
 fi
 export ONOS_API_PORT ONOS_SSH_PORT SADIS_VER OLT_VER AAA_VER DHCP_VER
 
@@ -764,7 +768,7 @@ if [ $WITH_ONOS == "yes" ]; then
     if [ ! -x ./onos-files/install-onos-applications.sh ]; then
         bspin - "Verify or download ONOS configuration support files $DOWNLOAD"
         (set -x; mkdir -p ./onos-files  >>$LOG 2>&1) >>$LOG 2>&1
-        for i in dhcp-to-controller-flow.json install-onos-applications.sh olt-onos-enableExtraneousRules.json olt-onos-netcfg.json olt-onos-olt-settings.json radius-config.json; do
+        for i in dhcp-to-controller-flow.json install-onos-applications.sh olt-onos-enableExtraneousRules.json olt-onos-netcfg.json olt-onos-olt-settings.json radius-config.json $SADIS_CONFIG; do
             if [ ! -r ./onos-files/$i ]; then
                 (set -x; curl -o ./onos-files/$i -sSL https://raw.githubusercontent.com/ciena/kind-voltha/master/onos-files/$i >>$LOG 2>&1) >>$LOG 2>&1
             fi
@@ -774,7 +778,7 @@ if [ $WITH_ONOS == "yes" ]; then
     fi
     
     bspin - "Install required ONOS applications $INSTALL"
-    (set -x; ./onos-files/install-onos-applications.sh >>$LOG 2>&1) >>$LOG 2>&1
+    (set -x; SADIS_CONFIG=$SADIS_CONFIG ./onos-files/install-onos-applications.sh >>$LOG 2>&1) >>$LOG 2>&1
     espin - $VERIFIED
 fi
 
