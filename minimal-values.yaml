@@ -47,5 +47,3 @@ onos_env:
 kafka_broker: 'voltha-kafka.voltha.svc.cluster.local:9092'
 pon_ports: 1
 onus_per_pon_port: 1
-wpa_wait: 10
-dhcp_wait: 10
