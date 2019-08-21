@@ -202,7 +202,7 @@ rm -f $PORTTMP
 
 ONOS_TAG=${ONOS_TAG:-}
 if [ "$WITH_TP" == "yes" -a "$ONOS_TAG X" == " X" ]; then
-    ONOS_TAG="voltha-1.7"
+    ONOS_TAG="voltha-2.1"
 fi
 export ONOS_API_PORT ONOS_SSH_PORT
 
