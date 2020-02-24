@@ -90,6 +90,7 @@ Please check the `releases` folder to see the available ones.
 | `VOLTHA_ADAPTER_OPEN_OLT_CHART` | onf/voltha-adapter-openolt   | Helm chart to use to install OpenOlt adapter                                        |
 | `VOLTHA_ADAPTER_OPEN_ONU_CHART` | onf/voltha-adapter-openonu   | Helm chart to use to install OpenOnu adapter                                        |
 | `ONLY_ONE`                      | yes                          | Run a single `rw-core`, no `api-server`, and no `ssh` CLI                           |
+| `NUM_OF_BBSIM`                  | 1                            | number of BBSIM POD to start (minimum = 1, maximum = 10)                            |
 
 
 ## Create Kubernetes Cluster
