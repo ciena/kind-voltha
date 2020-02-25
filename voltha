@@ -101,7 +101,7 @@ VOLTHA_ADAPTER_OPEN_ONU_CHART_VERSION=${VOLTHA_ADAPTER_OPEN_ONU_CHART_VERSION:-l
 ONOS_CHART_VERSION=${ONOS_CHART_VERSION:-latest}
 EXTRA_HELM_INSTALL_ARGS=
 NUM_OF_BBSIM=${NUM_OF_BBSIM:-1}
-MAX_NUM_OF_BBSIM=${MAX_NUM_OF_BBSIM:-10}
+MAX_NUM_OF_BBSIM=10
 
 HAVE_GO=$(which go >/dev/null 2>&1 && echo "yes" || echo "no")
 HOSTOS=$(uname -s | tr "[:upper:]" "[:lower:"])
@@ -113,12 +113,12 @@ fi
 # check number (range) of bbsim, max bbsim must not exceed 10 instances!
 # note: instances will be numbered from 0 to 9
 if [ "$1" == "up" ]; then
-	if [ "$NUM_OF_BBSIM" -le 1 ]; then 
-			echo -e "   \033[1m\033[5m\033[31mSetting of BBSIM instances to minimum instances of 1!\033[0m"
+	if [ "$NUM_OF_BBSIM" -lt 1 ]; then 
+			echo -e "   ${RED}Setting of BBSIM instances to minimum instances of 1!${NORMAL}"
 			NUM_OF_BBSIM=1
 	fi
-	if [ "$NUM_OF_BBSIM" -ge $(($MAX_NUM_OF_BBSIM)) ]; then 
-			echo -e "   \033[1m\033[5m\033[31mSetting of BBSIM instances to max supported instances of $MAX_NUM_OF_BBSIM!\033[0m"
+	if [ "$NUM_OF_BBSIM" -gt $(($MAX_NUM_OF_BBSIM)) ]; then 
+			echo -e "   ${RED}Setting of BBSIM instances to max supported instances of $MAX_NUM_OF_BBSIM!${NORMAL}"
 			NUM_OF_BBSIM=$MAX_NUM_OF_BBSIM
 	fi
 fi
