@@ -32,6 +32,15 @@ defaults:
 # to set the Docker image information below (search for START_OFAGENT_GO).
 use_ofagent_go: false
 
+# OPENONU-ADAPTER IMPLEMENTATION
+# ------------------------------
+# There are currently two implementations of OPENONU-ADAPTER: the original written in
+# Python and the reimplementation written in Go. The variable `use_openonu_adapter_go`
+# can be used to optionally use the new Go implementation. This is done by
+# setting that value to `true`. Along with this change you will also need
+# to set the Docker image information below (search for START_OPENONU_ADAPTER_GO).
+use_openonu_adapter_go: false
+
 ofagent:
   log_level: debug
 
@@ -94,6 +103,12 @@ images:
 #  rw_core:
 #    repository: voltha/voltha-rw-core
 #    tag: 2.1.1
+# START_OPENONU_ADAPTER_GO - Uncomment the following block to use the Go implementation
+# of the openonu-adapter
+#  adapter_open_onu_go:
+#    repository: voltha-openonu-adapter-go
+#    tag: 0.0.1-dev
+# END_OPENONU_ADAPTER_GO
 
 deployments:
   etcdOperator: true
