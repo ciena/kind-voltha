@@ -603,15 +603,21 @@ if [ "$1" == "down" ]; then
     else
         EXISTS=$(helm list -q)
         EXPECT="etcd-operator onos open-olt open-onu sim voltha bbsim radius"
-		for instance in $(seq 1 $(($MAX_NUM_OF_BBSIM-1))); do
-			EXPECT="$EXPECT bbsim$instance"
-		done
+#		for instance in $(seq 1 $(($MAX_NUM_OF_BBSIM-1))); do
+#			EXPECT="$EXPECT bbsim$instance"
+#		done
         bspin "Remove Helm Deployments"
         for i in $EXISTS; do
-            if [ $(echo $EXPECT | grep -c $i) -eq 1 ]; then
-                sspin "Remove Helm Deployments: $i$CEOL"
-                (set -x; ./bin/helm delete --no-hooks --purge $i >>$LOG 2>&1) >>$LOG 2>&1
-            fi
+#            if [ $(echo $EXPECT | grep -c $i) -eq 1 ]; then
+#               sspin "Remove Helm Deployments: $i$CEOL"
+#                (set -x; ./bin/helm delete --no-hooks --purge $i >>$LOG 2>&1) >>$LOG 2>&1
+#            fi
+			for j in $EXPECT; do
+				if [[ $i =~ $j ]]; then
+					sspin "Remove Helm Deployments: $i$CEOL"
+					(set -x; ./bin/helm delete --no-hooks --purge $i >>$LOG 2>&1) >>$LOG 2>&1
+				fi	
+			done
         done
         espin "$VERIFIED Remove Helm Deployments$CEOL"
         if [ "$WAIT_ON_DOWN" == "yes" ]; then
