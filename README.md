@@ -14,7 +14,8 @@ curl -o $GOPATH/bin/kubectl -sSL https://storage.googleapis.com/kubernetes-relea
 curl -o $GOPATH/bin/kind \
 	-sSL https://github.com/kubernetes-sigs/kind/releases/download/v0.4.0/kind-$(go env GOHOSTOS)-$(go env GOARCH)
 curl -o $GOPATH/bin/voltctl \
-	-sSL https://github.com/ciena/voltctl/releases/download/0.0.5-dev/voltctl-0.0.5_dev-$(go env GOHOSTOS)-$(go env GOARCH)
+	-sSL https://github.com/opencord/voltctl/releases/download/v1.0.12/voltctl-v1.0.12-$(go env GOHOSTOS)-$(go env GOARCH)
+export PATH=$(go env GOPATH)/bin:$PATH
 curl -sSL https://git.io/get_helm.sh | USE_SUDO=false HELM_INSTALL_DIR=$(go env GOPATH)/bin bash
 chmod 755 $GOPATH/bin/kind $GOPATH/bin/voltctl $GOPATH/bin/kubectl
 export PATH=$(go env GOPATH)/bin:$PATH
