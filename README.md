@@ -80,6 +80,7 @@ Please check the `releases` folder to see the available ones.
 | `WITH_IGMP`                     | no                           | Configure the OLT app to push IGMP flows                                            |
 | `WITH_TIMINGS`                  | no                           | Outputs duration of various steps of the install                                    |
 | `WITH_CHAOS`                    | no                           | Starts kube-monkey to introduce chaos                                               |
+| `WITH_MONITORING`               | no                           | Starts prometheus and grafana to monitor components usage                           |
 | `CONFIG_SADIS`                  | no                           | Configure SADIS entries into ONOS, if WITH_ONOS set (see SADIS Configuration        |    
 | `INSTALL_ONOS_APPS`             | no                           | Replaces/installs ONOS OAR files in onos-files/onos-apps                            |
 | `INSTALL_KUBECTL`               | yes                          | Should a copy of `kubectl` be installed locally?                                    |

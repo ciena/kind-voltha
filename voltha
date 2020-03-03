@@ -69,6 +69,7 @@ TYPE=${TYPE:-minimal}
 NAME=${NAME:-$TYPE}
 WITH_TIMINGS=${WITH_TIMINGS:-no}
 WITH_BBSIM=${WITH_BBSIM:-no}
+WITH_MONITORING=${WITH_MONITORING:-no}
 WITH_RADIUS=${WITH_RADIUS:-no}
 WITH_EAPOL=${WITH_EAPOL:-yes}
 WITH_DHCP=${WITH_DHCP:-yes}
@@ -100,6 +101,8 @@ VOLTHA_ADAPTER_OPEN_OLT_CHART_VERSION=${VOLTHA_ADAPTER_OPEN_OLT_CHART_VERSION:-l
 VOLTHA_ADAPTER_OPEN_ONU_CHART=${VOLTHA_ADAPTER_OPEN_ONU_CHART:-onf/voltha-adapter-openonu}
 VOLTHA_ADAPTER_OPEN_ONU_CHART_VERSION=${VOLTHA_ADAPTER_OPEN_ONU_CHART_VERSION:-latest}
 ONOS_CHART_VERSION=${ONOS_CHART_VERSION:-latest}
+MONITORING_CHART=${MONITORING_CHART:-onf/nem-monitoring}
+MONITORING_CHART_VERSION=${MONITORING_CHART_VERSION:-latest}
 EXTRA_HELM_INSTALL_ARGS=
 
 HAVE_GO=$(which go >/dev/null 2>&1 && echo "yes" || echo "no")
@@ -142,6 +145,7 @@ function verify_yes_no() {
 ALL_YES_NO="\
     WITH_TIMINGS \
     WITH_BBSIM \
+    WITH_MONITORING \
     WITH_RADIUS \
     WITH_EAPOL \
     WITH_DHCP \
@@ -576,7 +580,7 @@ port_forward() {
     local TO_PORT=$4
     local TAG=$SVC-$NAME
 
-    (set -x; _TAG=$TAG bash -c "while true; do kubectl port-forward -n $NS service/$SVC $FROM_PORT:$TO_PORT; done" >>$LOG 2>&1 &) >>$LOG 2>&1
+    (set -x; _TAG=$TAG bash -c "while true; do kubectl port-forward --address 0.0.0.0 -n $NS service/$SVC $FROM_PORT:$TO_PORT; done" >>$LOG 2>&1 &) >>$LOG 2>&1
 }
 
 kill_port_forward() {
@@ -627,7 +631,7 @@ if [ "$1" == "down" ]; then
         fi
     else
         EXISTS=$(helm list -q)
-        EXPECT="etcd-operator onos open-olt open-onu sim voltha bbsim radius"
+        EXPECT="etcd-operator onos open-olt open-onu sim voltha bbsim radius monitoring"
         bspin "Remove Helm Deployments"
         for i in $EXISTS; do
             if [ $(echo $EXPECT | grep -c $i) -eq 1 ]; then
@@ -1272,6 +1276,35 @@ if [ $WITH_BBSIM == "yes" ]; then
     if [ "$WITH_TIMINGS" == "yes" ]; then
         printtime $(expr $(date +%s) - $STIME)
     fi
+fi
+
+if [ $WITH_MONITORING == "yes" ]; then
+  STIME=$(date +%s)
+  echo -e "Verify MONITORING $PLUG"
+  bspin - "Verify MONITORING Installed"
+  if [ $(helm list --deployed --short --namespace default "^monitoring\$" | wc -l) -ne 1 ]; then
+      espin - $NOT_VERIFIED
+      helm_install - default monitoring $MONITORING_CHART $MONITORING_CHART_VERSION "Install MONITORING"
+  else
+      espin - $VERIFIED
+  fi
+  wait_for_pods - "default" 7 "includes" -1 "Waiting for MONITORING to start" "monitoring-.*"
+
+  bspin - "Forward prometheus UI port $FORWARD"
+  kill_port_forward monitoring-prometheus-server
+  port_forward default monitoring-prometheus-server 31301 80
+  espin - $VERIFIED
+  bspin - "Forward grafana UI port $FORWARD"
+  kill_port_forward monitoring-grafana
+  port_forward default monitoring-grafana 31300 80
+  espin - $VERIFIED
+
+  # this is required to expose the kafka metrics to prometheus
+  kubectl expose -n voltha deployment voltha-kafka-exporter
+
+  if [ "$WITH_TIMINGS" == "yes" ]; then
+      printtime $(expr $(date +%s) - $STIME)
+  fi
 fi
 
 if [ $WITH_RADIUS == "yes" ]; then

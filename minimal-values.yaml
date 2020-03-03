@@ -123,6 +123,65 @@ onu: 1
 auth: true
 dhcp: true
 
+# Customization for monitoring
+kpi_exporter:
+  enabled: false
+  kpi_broker: voltha-kafka.voltha.svc:9092
+grafana:
+  # dashboards:
+  #   default:
+  #     ETCD:
+  #       gnetId: 10323
+  #       revision: 1
+  #       datasource: Prometheus
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://monitoring-prometheus-server
+          access: proxy
+          isDefault: true
+
+dashboards:
+  k8s: true
+  nodeExporter: true
+  xos: false
+  onos: false
+  aaa: false
+  voltha: false
+  voltha2: true
+
+prometheus:
+  extraScrapeConfigs: |
+    - job_name: 'kafka'
+      metrics_path: /metrics
+      scrape_interval: 10s
+      static_configs:
+       - targets:
+         - voltha-kafka-exporter.voltha.svc:9308
+    - job_name: 'etcd'
+      metrics_path: /metrics
+      scrape_interval: 10s
+      static_configs:
+        - targets:
+            - voltha-etcd-cluster.voltha.svc:2379
+    - job_name: 'node-exporter'
+      metrics_path: /metrics
+      scrape_interval: 30s
+      static_configs:
+        - targets:
+          - monitoring-prometheus-node-exporter:9100
+
+# Expose kafka prometheus port
+kafka:
+  prometheus:
+    jmx:
+      enabled: true
+    kafka:
+      enabled: true
+
 # SHOCK THE MONKEY OR LET LOSE THE DOGS OF WAR
 # The VOLTHA charts have support for adding extra labels to deployments and
 # pods. These extra labels can be used to integrate with other utilities
