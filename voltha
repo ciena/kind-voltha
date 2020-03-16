@@ -1381,7 +1381,7 @@ if [ $WITH_BBSIM == "yes" ]; then
             espin - $VERIFIED
         fi
     done
-    wait_for_pods - "voltha" $NUM_OF_BBSIM "includes" -1 "Waiting for BBSIM to start" "bbsim*"
+    wait_for_pods - "voltha" $NUM_OF_BBSIM "includes" -1 "Waiting for BBSIM to start" "bbsim.*"
     if [ "$WITH_TIMINGS" == "yes" ]; then
         printtime $(expr $(date +%s) - $STIME)
     fi
