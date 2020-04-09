@@ -1,8 +1,0 @@
-{
-  "AAA": {
-    "radiusConnectionType" : "socket",
-    "radiusHost": ":RADIUS_SVC:",
-    "radiusServerPort": ":RADIUS_PORT:",
-    "radiusSecret": "SECRET"
-  }
-}
